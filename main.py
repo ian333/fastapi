@@ -2,7 +2,7 @@ from typing import Optional
 from unittest import result
 from enum import Enum
 
-from pydantic import BaseModel,Field
+from pydantic import BaseModel, EmailStr,Field, HttpUrl
 
 from fastapi import FastAPI, Path, Query
 
@@ -20,11 +20,24 @@ class HairColor(Enum):
     brown= "brown"
     blonde="blonde"
     red="red"
+    
 
 class Location(BaseModel):
-    city: str
-    state: str
-    country: str
+    city: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        )
+    state: str= Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        )
+    country: str =Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        )
 
 class Person(BaseModel):
     first_name: str = Field (
@@ -43,6 +56,22 @@ class Person(BaseModel):
         )
     hair_color: Optional[HairColor]= Field(default=None,)
     is_married: Optional[bool] = Field(default=None)
+    email: Optional[EmailStr]
+    website: Optional[HttpUrl]
+
+    class Config:
+        schema_extra={
+            "example":{
+                "first_name":"Facundo",
+                "last_name":"Garcia Martoni",
+                "age":"21",
+                "hair_color":"blonde",
+                "is_married":"false",
+                "email":"facundo@example.com",
+                "website":"https://github.com/ian333",
+                "city":"chimalhuacan "
+            }
+        }
 
 
 @app.get("/")
@@ -104,4 +133,4 @@ def update_person(
     results=person.dict()
     results.update(location.dict())
 
-    return results
+    return person
