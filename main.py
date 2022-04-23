@@ -68,8 +68,7 @@ class Person(BaseModel):
                 "hair_color":"blonde",
                 "is_married":"false",
                 "email":"facundo@example.com",
-                "website":"https://github.com/ian333",
-                "city":"chimalhuacan "
+                "website":"https://github.com/ian333"
             }
         }
 
@@ -94,12 +93,14 @@ def show_person(
         min_length=1,
         max_length=50,
         title="Person name",
-        description="This is the person name. Its Between 1-50 characters"
+        description="This is the person name. Its Between 1-50 characters",
+        example="Ian"
         ),
     age:str = Query(
         ...,
         title="Person Age ",
-        description="This is the age of the person"
+        description="This is the age of the person",
+        example="25"
         )
     ) :  
     return {name:age}
@@ -112,7 +113,8 @@ def show_person(
         ...,
         gt=0,
         title="Person ID",
-        description="This person exists "
+        description="This person exists ",
+        example=22
         )
     ):
     return {person_id: "It exists"}
@@ -124,7 +126,8 @@ def update_person(
         ...,
         tittle= "Person ID",
         description="This is the person ID",
-        gt=0
+        gt=0,
+        example=22
         ),
     person: Person = Body(...),
     location: Location = Body(...)
