@@ -1,10 +1,12 @@
+from email import message
+from email.policy import default
 from typing import Optional
 from unittest import result
 from enum import Enum
 
 from pydantic import BaseModel, EmailStr,Field, HttpUrl
 
-from fastapi import FastAPI, Form, Path, Query,status
+from fastapi import Cookie, FastAPI, Form, Header, Path, Query,status
 
 from fastapi import Body
 
@@ -167,6 +169,7 @@ def update_person(
 
     return person
 
+# forms
 
 @app.post(
     path="/login",
@@ -178,3 +181,28 @@ def login(
     password:str=Form(...)):
     
     return LoginOut(username=username)
+
+
+# Cookies & Headers Parameters
+
+@app.post(
+    path="/contact",
+    status_code=status.HTTP_200_OK
+            )
+def contact(
+    first_name:str= Form(
+        ...,
+        max_length=20,
+        min_length=1,
+    ),
+    last_name:str= Form(
+        ...,
+        max_length=20,
+        min_length=1,
+    ),
+    email:EmailStr=Form(...),
+    message:str=Form(...,min_length=20),
+    user_agent: Optional[str ]=Header(default=None),
+    ads:Optional[str]=Cookie(default=None)
+):
+    return user_agent
