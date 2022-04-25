@@ -1,13 +1,16 @@
-from email import message
-from email.policy import default
+#Python
+
+from http.client import HTTPException
 from typing import Optional
-from unittest import result
 from enum import Enum
+
+# Pydantic
 
 from pydantic import BaseModel, EmailStr,Field, HttpUrl
 
-from fastapi import Cookie, FastAPI, Form, Header, Path, Query,status
+#FastApi
 
+from fastapi import Cookie, FastAPI, File, Form, Header, Path, Query, UploadFile,status
 from fastapi import Body
 
 app = FastAPI()
@@ -23,7 +26,6 @@ class HairColor(Enum):
     blonde="blonde"
     red="red"
     
-
 class Location(BaseModel):
     
     city: str = Field(
@@ -61,8 +63,6 @@ class PersonBase(BaseModel):
     is_married: Optional[bool] = Field(default=None)
     email: Optional[EmailStr]
     website: Optional[HttpUrl]
-
-
 
 class Person(PersonBase):
     password: str = Field(
@@ -133,6 +133,8 @@ def show_person(
 
 # Validaciones Path parameteers
 
+persons=[1,2,3,4,5]
+
 @app.get(
     "/person/detail/{person_id}",
     status_code=status.HTTP_302_FOUND)
@@ -145,6 +147,11 @@ def show_person(
         example=22
         )
     ):
+    if person_id not in persons:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND
+            detail="This person doesn't exists!"
+        )
     return {person_id: "It exists"}
 
 # Validaciones Request Body 
@@ -206,3 +213,17 @@ def contact(
     ads:Optional[str]=Cookie(default=None)
 ):
     return user_agent
+
+#Files
+
+@app.post(
+    path="/post_image"
+)
+def post_image(
+    image:UploadFile = File(...)
+):
+    return {
+        "Filename":image.filename,
+        "Format":image.content_type,
+        "Size(kb)":round(len(image.file.read())/1024,ndigits=2)
+    }
