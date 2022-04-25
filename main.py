@@ -4,7 +4,7 @@ from enum import Enum
 
 from pydantic import BaseModel, EmailStr,Field, HttpUrl
 
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, Path, Query,status
 
 from fastapi import Body
 
@@ -85,19 +85,26 @@ class Person(PersonBase):
 class PersonOut(PersonBase):
     pass
         
-@app.get("/")
+@app.get(
+    "/",
+    status_code=status.HTTP_200_OK)
 def home():
     return {"Message" : "Hello World"}
 
 # Request & response body
 
-@app.post("/person/new",response_model=PersonOut)
+@app.post(
+    "/person/new",
+    response_model=PersonOut,
+    status_code=status.HTTP_201_CREATED)
 def create_person(person: Person = Body(...)):
     return person
 
 # Validaciones Query parameteers
 
-@app.get("/person/detail")
+@app.get(
+    "/person/detail",
+    status_code=status.HTTP_200_OK)
 def show_person(
     name:Optional[str]= Query(
         default=None,
@@ -118,7 +125,9 @@ def show_person(
 
 # Validaciones Path parameteers
 
-@app.get("/person/detail/{person_id}")
+@app.get(
+    "/person/detail/{person_id}",
+    status_code=status.HTTP_302_FOUND)
 def show_person(
     person_id: int= Path(
         ...,
@@ -131,8 +140,11 @@ def show_person(
     return {person_id: "It exists"}
 
 # Validaciones Request Body 
-@app.put("/person/{person_id}")
+@app.put(
+    "/person/{person_id}",
+    status_code=status.HTTP_205_RESET_CONTENT)
 def update_person(
+
     person_id: int = Path(
         ...,
         tittle= "Person ID",
@@ -148,3 +160,6 @@ def update_person(
     results.update(location.dict())
 
     return person
+
+
+ 
