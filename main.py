@@ -104,9 +104,23 @@ def home():
     "/person/new",
     response_model=PersonOut,
     status_code=status.HTTP_201_CREATED,
-    tags=["Persons"]
+    tags=["Persons"],
+    summary="Create person in the app"
     )   
 def create_person(person: Person = Body(...)):
+    """
+     Create Person
+    
+        This path Operation creates a person in the app and save the information in the Database    
+        
+        Parameters: 
+        - Request body parameter:
+            -**person: Person -> a person model with First name, last name,Hair color, marital Status and password**
+
+        Returns a person model with First & last name, hair color and marital status 
+    
+    
+    """
     return person
 
 # Validaciones Query parameteers
@@ -130,7 +144,16 @@ def show_person(
         description="This is the age of the person",
         example="25"
         )
-    ) :  
+    ):
+    """_summary_
+
+    Args:
+        name (Optional[str], optional): _description_. Defaults to Query( default=None, min_length=1, max_length=50, title="Person name", description="This is the person name. Its Between 1-50 characters", example="Ian" ).
+        age (str    , optional): _description_. Defaults to Query( ..., title="Person Age ", description="This is the age of the person", example="25" ).
+
+    Returns:
+        _type_: _description_
+    """      
     return {name:age}
 
 # Validaciones Path parameteers
@@ -150,6 +173,17 @@ def show_person(
         tags=["Persons"]
         )
     ):
+    """_summary_
+
+    Args:
+        person_id (int, optional): _description_. Defaults to Path( ..., gt=0, title="Person ID", description="This person exists ", example=22, tags=["Persons"] ).
+
+    Raises:
+        HTTPException:  This person Doesn't exists in the database
+
+    Returns:
+        JSON: Return a mess
+    """    
     if person_id not in persons: 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -174,7 +208,16 @@ def update_person(
     person: Person = Body(...),
     location: Location = Body(...)
 ):
+    """Update Person
 
+    Args:
+        person_id (int, optional): this is the id of the user to show . Defaults to Path( ..., tittle= "Person ID", description="This is the person ID", gt=0, example=22 ).
+        person (Person, optional): This is a variable of the typer person  . Defaults to Body(...).
+        location (Location, optional): This is a variable of the type Location . Defaults to Body(...).
+
+    Returns:
+        person: returns the variable person
+    """
     results=person.dict()
     results.update(location.dict())
 
