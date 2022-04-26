@@ -103,7 +103,9 @@ def home():
 @app.post(
     "/person/new",
     response_model=PersonOut,
-    status_code=status.HTTP_201_CREATED)
+    status_code=status.HTTP_201_CREATED,
+    tags=["Persons"]
+    )   
 def create_person(person: Person = Body(...)):
     return person
 
@@ -111,7 +113,8 @@ def create_person(person: Person = Body(...)):
 
 @app.get(
     "/person/detail",
-    status_code=status.HTTP_200_OK)
+    status_code=status.HTTP_200_OK,
+    tags=["Persons"])
 def show_person(
     name:Optional[str]= Query(
         default=None,
@@ -143,7 +146,8 @@ def show_person(
         gt=0,
         title="Person ID",
         description="This person exists ",
-        example=22
+        example=22,
+        tags=["Persons"]
         )
     ):
     if person_id not in persons: 
@@ -156,7 +160,8 @@ def show_person(
 # Validaciones Request Body 
 @app.put(
     "/person/{person_id}",
-    status_code=status.HTTP_205_RESET_CONTENT)
+    status_code=status.HTTP_205_RESET_CONTENT,
+    tags=["Persons"])
 def update_person(
 
     person_id: int = Path(
@@ -180,7 +185,8 @@ def update_person(
 @app.post(
     path="/login",
     response_model=LoginOut,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Functions"]
     )
 def login(
     username:str=Form(...),
@@ -193,7 +199,8 @@ def login(
 
 @app.post(
     path="/contact",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["User Info"]
             )
 def contact(
     first_name:str= Form(
@@ -216,7 +223,9 @@ def contact(
 #Files
 
 @app.post(
-    path="/post_image"
+    path="/post_image",
+    tags=["User Info"]
+    
 )
 def post_image(
     image:UploadFile = File(...)
