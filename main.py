@@ -1,6 +1,5 @@
 #Python
 
-from http.client import HTTPException
 from typing import Optional
 from enum import Enum
 
@@ -10,7 +9,7 @@ from pydantic import BaseModel, EmailStr,Field, HttpUrl
 
 #FastApi
 
-from fastapi import Cookie, FastAPI, File, Form, Header, Path, Query, UploadFile,status
+from fastapi import Cookie, FastAPI, File, Form, HTTPException, Header, Path, Query, UploadFile,status
 from fastapi import Body
 
 app = FastAPI()
@@ -147,12 +146,12 @@ def show_person(
         example=22
         )
     ):
-    if person_id not in persons:
+    if person_id not in persons: 
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND
-            detail="This person doesn't exists!"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="¡This person doesn't exist!"
         )
-    return {person_id: "It exists"}
+    return {person_id: "It exists!"}
 
 # Validaciones Request Body 
 @app.put(
